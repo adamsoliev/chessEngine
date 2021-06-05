@@ -85,7 +85,6 @@ int main(int argc, char *argv[]) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
-    bool show_demo_window = false;
     bool show_another_window = false;
 
     glClearColor(backgroundR, backgroundG, backgroundB, 1.0f);
@@ -98,12 +97,10 @@ int main(int argc, char *argv[]) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        // standard demo window
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-        }
         // a window is defined by Begin/End pair
         {
+          /*
+          {
             static int counter = 0;
 
             int glfw_width = 0, glfw_height = 0, controls_width = 0;
@@ -115,13 +112,13 @@ int main(int argc, char *argv[]) {
                 controls_width = 300;
             }
 
-            // position the controls widget in the top-right corner with some margin
-            ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+            // position the controls widget in the top-right corner with some
+          margin ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
             // here we set the calculated width and also make the height to be
             // be the height of the main window also with some margin
             ImGui::SetNextWindowSize(ImVec2(static_cast<float>(controls_width),
-                                            static_cast<float>(glfw_height - 20)),
-                                     ImGuiCond_Always);
+                                            static_cast<float>(glfw_height -
+          20)), ImGuiCond_Always);
 
             ImGui::SetNextWindowBgAlpha(0.7f);
             // create a window and append into it
@@ -129,7 +126,8 @@ int main(int argc, char *argv[]) {
 
             ImGui::Dummy(ImVec2(0.0f, 1.0f));
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Time");
-            ImGui::Text("%s", currentTime(std::chrono::system_clock::now()).c_str());
+            ImGui::Text("%s",
+          currentTime(std::chrono::system_clock::now()).c_str());
 
             ImGui::Dummy(ImVec2(0.0f, 3.0f));
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Application");
@@ -156,39 +154,26 @@ int main(int argc, char *argv[]) {
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
 
-            if (ImGui::BeginPopupModal("Easter egg", NULL)) {
-                ImGui::Text("Ho-ho, you found me!");
-                if (ImGui::Button("Buy Ultimate Orb")) {
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::EndPopup();
-            }
-
-            ImGui::Dummy(ImVec2(0.0f, 15.0f));
-            if (!show_demo_window) {
-                if (ImGui::Button("Open standard demo")) {
-                    show_demo_window = true;
-                }
-            }
-
             ImGui::Checkbox("show a custom window", &show_another_window);
             if (show_another_window) {
                 ImGui::SetNextWindowSize(
                         ImVec2(250.0f, 150.0f),
-                        ImGuiCond_FirstUseEver // after first launch it will use values from
+                        ImGuiCond_FirstUseEver // after first launch it will use
+          values from
                         // imgui.ini
                 );
-                // the window will have a closing button that will clear the bool
+                // the window will have a closing button that will clear the
+          bool
                 // variable
                 ImGui::Begin("A custom window", &show_another_window);
 
                 ImGui::Dummy(ImVec2(0.0f, 1.0f));
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Some label");
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Some
+          label");
 
                 ImGui::TextColored(
-                        ImVec4(128 / 255.0f, 128 / 255.0f, 128 / 255.0f, 1.0f), "%s",
-                        "another label");
-                ImGui::Dummy(ImVec2(0.0f, 0.5f));
+                        ImVec4(128 / 255.0f, 128 / 255.0f, 128 / 255.0f, 1.0f),
+          "%s", "another label"); ImGui::Dummy(ImVec2(0.0f, 0.5f));
 
                 ImGui::Dummy(ImVec2(0.0f, 1.0f));
                 if (ImGui::Button("Close")) {
@@ -199,7 +184,45 @@ int main(int argc, char *argv[]) {
                 ImGui::End();
             }
 
+
             ImGui::End();
+          }
+          */
+
+          bool my_tool_active = false;
+          float my_color[4] = {1.0, 1.0, 0.0, 1.0};
+          // Create a window called "My First Tool", with a menu bar.
+
+          ImGui::Begin("My First Tool", &my_tool_active,
+                       ImGuiWindowFlags_MenuBar);
+          if (ImGui::BeginMenuBar()) {
+            if (ImGui::BeginMenu("File")) {
+              if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */
+              }
+              if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */
+              }
+              if (ImGui::MenuItem("Close", "Ctrl+W")) {
+                my_tool_active = false;
+              }
+              ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+          }
+
+          // Edit a color (stored as ~4 floats)
+          ImGui::ColorEdit4("Color", my_color);
+
+          // Plot some values
+          const float my_values[] = {0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f};
+          ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+          // Display contents in a scrolling region
+          ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+          ImGui::BeginChild("Scrolling");
+          for (int n = 0; n < 50; n++)
+            ImGui::Text("%04d: Some text", n);
+          ImGui::EndChild();
+          ImGui::End();
         }
 
         // rendering
